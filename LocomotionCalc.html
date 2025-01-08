@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Walking Speed Variations</title>
+</head>
+<body>
+  <h1>Walking Speed Variations</h1>
+
+  <!-- 1) Input for PWS -->
+  <p>
+    Enter your preferred walking speed (PWS) in m/s:
+    <input type="number" step="0.01" id="preferredSpeedInput" placeholder="m/s" />
+    <button onclick="generateSpeedTable()">Generate Speeds</button>
+  </p>
+
+  <!-- 2) Show the PWS just for reference (NOT part of the table) -->
+  <p id="pwsDisplay" style="font-weight: bold; color: #333;"></p>
+
+  <!-- 3) Table for results -->
+  <table id="resultsTable" border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse;">
+    <thead>
+      <tr>
+        <th>#Trial</th>
+        <th>Name</th>
+        <th>Velocity (m/s)</th>
+        <th>Velocity (km/h)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    function generateSpeedTable() {
+      // 1) Grab the user's preferred walking speed
+      const pwsInput = document.getElementById("preferredSpeedInput");
+      const pws = parseFloat(pwsInput.value);
+
+      // 2) Simple validation
+      if (isNaN(pws) || pws <= 0) {
+        alert("Please enter a valid positive number for PWS.");
+        return;
+      }
+
+      // 3) Display the PWS at the top
+      document.getElementById("pwsDisplay").textContent = "Your entered PWS is: " + pws.toFixed(2) + " m/s";
+
+      // 4) Variations (excluding the original PWS from the trials)
+      let variations = [
+        { name: "PWS +10%", velocity: pws * 1.10 },
+        { name: "PWS +5%",  velocity: pws * 1.05 },
+        { name: "PWS -5%",  velocity: pws * 0.95 },
+        { name: "PWS -10%", velocity: pws * 0.90 },
+        { name: "Default 0.8", velocity: 0.8 },
+        { name: "Default 1.1", velocity: 1.1 },
+        { name: "Default 1.6", velocity: 1.6 }
+      ];
+
+      // 5) Shuffle the array
+      variations = shuffle(variations);
+
+      // 6) Clear any old rows from the table body
+      const tableBody = document.querySelector("#resultsTable tbody");
+      tableBody.innerHTML = "";
+
+      // 7) Populate the table
+      variations.forEach((item, index) => {
+        const row = document.createElement("tr");
+
+        // #Trial
+        const trialCell = document.createElement("td");
+        trialCell.textContent = index + 1;
+        row.appendChild(trialCell);
+
+        // Name
+        const nameCell = document.createElement("td");
+        nameCell.textContent = item.name;
+        row.appendChild(nameCell);
+
+        // Velocity (m/s)
+        const msCell = document.createElement("td");
+        msCell.textContent = item.velocity.toFixed(2);
+        row.appendChild(msCell);
+
+        // Velocity (km/h) [1 m/s = 3.6 km/h]
+        const kmhCell = document.createElement("td");
+        kmhCell.textContent = (item.velocity * 3.6).toFixed(2);
+        row.appendChild(kmhCell);
+
+        tableBody.appendChild(row);
+      });
+    }
+
+    // Fisher-Yates shuffle
+    function shuffle(array) {
+      let currentIndex = array.length, randomIndex;
+      while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] =
+          [array[randomIndex], array[currentIndex]];
+      }
+      return array;
+    }
+  </script>
+</body>
+</html>
