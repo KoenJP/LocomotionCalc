@@ -18,7 +18,7 @@
     <button onclick="generateSpeedTable()">Generate Speeds</button>
   </p>
 
-  <!-- 2) Show the calculated PWS for reference -->
+  <!-- 2) Show the calculated PWS for reference in both units -->
   <p id="pwsDisplay" style="font-weight: bold; color: #333;"></p>
 
   <!-- 3) Table for results -->
@@ -28,7 +28,7 @@
         <th>#Trial</th>
         <th>Name</th>
         <th>V(m/s)</th>
-        <th>Velocity (km/h)</th>
+        <th>V(km/h)</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -65,11 +65,13 @@
         return;
       }
 
-      // 3) Calculate preferred walking speed (PWS) in m/s
+      // 3) Calculate preferred walking speed (PWS) in m/s and km/h
       const pws = distance / totalTimeSeconds;
+      const pwsKmh = pws * 3.6;
 
-      // 4) Display the calculated PWS at the top
-      document.getElementById("pwsDisplay").textContent = "Your calculated PWS is: " + pws.toFixed(2) + " m/s";
+      // 4) Display the calculated PWS at the top in both m/s and km/h
+      document.getElementById("pwsDisplay").textContent =
+        "Your calculated PWS is: " + pws.toFixed(2) + " m/s (" + pwsKmh.toFixed(2) + " km/h)";
 
       // 5) Define speed variations (relative to the calculated PWS)
       let variations = [
@@ -82,7 +84,7 @@
         { name: "Default 1.6", velocity: 1.6 }
       ];
 
-      // 6) Shuffle the variations array using Fisher-Yates shuffle
+      // 6) Shuffle the variations array using the Fisher-Yates shuffle
       variations = shuffle(variations);
 
       // 7) Clear previous table rows (if any)
@@ -108,7 +110,7 @@
         msCell.textContent = item.velocity.toFixed(2);
         row.appendChild(msCell);
 
-        // Velocity (km/h) conversion: 1 m/s = 3.6 km/h
+        // V(km/h) [conversion: 1 m/s = 3.6 km/h]
         const kmhCell = document.createElement("td");
         kmhCell.textContent = (item.velocity * 3.6).toFixed(2);
         row.appendChild(kmhCell);
